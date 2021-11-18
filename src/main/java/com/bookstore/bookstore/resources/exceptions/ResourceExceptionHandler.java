@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.bookstore.bookstore.service.exceptions.DataIntegrityViolationException;
 import com.bookstore.bookstore.service.exceptions.ObjectNotFoundException;
 
 @ControllerAdvice
@@ -19,5 +20,14 @@ public class ResourceExceptionHandler {
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
 	}
+	
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataIntegrityViolationException(DataIntegrityViolationException e, ServletRequest request){
+		
+		StandardError erro = new StandardError(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), e.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	}
+	
 }
-//Essa classe vai ser usada por todos os controllers para manejar as exceções
+//Essa classe vai ser usada por todos os controllers para manejar as exceções personalizadas.
